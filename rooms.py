@@ -486,6 +486,22 @@ class SpareRoom(SearchEngine):
 
         return self.rooms[room_id]
 
+    def message_best(self, score):
+        best_rooms_id = [self.rooms[key] if self.rooms[key]['score'] >= score]
+        for room_id in self.rooms[key]:
+            contact_room(room_id)
+
+    def contact_room(self, room_id):
+        url = '{location}/{endpoint}/{id}?format=json'.format(location=self.api_location, endpoint=self.api_details_endpoint, id=room_id)
+        from selenium import webdriver
+
+        driver = webdriver.Firefox()
+        # Go to your page url
+        driver.get(url)
+        # Get button you are going to click by its id ( also you could us find_element_by_css_selector to get element by css selector)
+        button_element = driver.find_element_by_id('button id')
+        button_element.click()
+
 def main():
     print('Room Finder v{version} (c) Ruben de Campos'.format(version=VERSION))
 
@@ -572,6 +588,7 @@ def main():
         spareroom.get_new_rooms()
 
     spareroom.generate_report(fields=settings.FIELDS, max_range=settings.MAX_RESULTS)
+    spareroom.message_best(80)
 
 if __name__ == "__main__":
     main()
